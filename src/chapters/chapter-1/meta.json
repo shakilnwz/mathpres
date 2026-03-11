@@ -1,0 +1,10 @@
+{
+    "title": "Introduction to Calculus",
+    "description": "Basic concepts of limits and derivatives",
+    "slides": [
+        "slide-1.vue",
+        "slide-2.html",
+        "slide-3.html",
+        "slide-4.md"
+    ]
+}
