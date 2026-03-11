@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hugeicons/core-free-icons": "^4.0.0",
+    "@hugeicons/vue": "^1.0.5",
     "katex": "^0.16.38",
     "markdown-it": "^14.1.1",
     "mathjs": "^15.1.1",

@@ -1,0 +1,116 @@
+
+<div>
+    <style>
+body{font-family:Arial;text-align:center;background:#f0f2f7;}
+h2{margin-top:10px;}
+input{padding:5px;margin:4px;width:180px;}
+button{padding:7px 12px;margin:4px;}
+#graph{width:1000px;height:650px;margin:auto;background:white;}
+.panel{background:white;padding:10px;margin:10px;border-radius:5px;}
+    </style>
+
+    <div>
+        <h2>Ultimate Smart Digital Math Lab V3 Pro+</h2>
+
+        <div class="panel">
+            Function 1: <input id="func1" value="y = x^2 - 3*x + 2"><br>
+            Function 2: <input id="func2" value="2*x + 1"><br>
+            Implicit 1: <input id="imp1" value="x^2/9 + y^2/4 - 1"><br>
+            Implicit 2: <input id="imp2" value="x^2/9 - y^2/4 -1"><br>
+            Tangent at x = <input id="point" value="1"><br>
+            <button onclick="draw()">Draw Graph</button>
+            <button onclick="tangent()">Tangent</button>
+            <button onclick="normal()">Normal</button>
+            <button onclick="integral()">Integral Area</button>
+            <button onclick="clearGraph()">Clear Graph</button>
+        </div>
+
+        <div id="graph"></div>
+        <div class="panel"><h3 id="result"></h3></div>
+
+        <script>
+// Generate y values for explicit function
+function generateData(expr){
+    let x=[], y=[];
+    for(let i=-10;i<=10;i+=0.05){
+        x.push(i);
+        try{y.push(math.evaluate(expr,{x:i}));}
+        catch(e){y.push(NaN);}
+    }
+    return {x:x, y:y};
+}
+
+// Plot implicit equation using contour method
+function generateImplicit(expr){
+    let x=[], y=[], step=0.1;
+    for(let i=-10;i<=10;i+=step){
+        for(let j=-10;j<=10;j+=step){
+            let val=math.evaluate(expr,{x:i,y:j});
+            if(Math.abs(val)<0.05){
+                x.push(i);
+                y.push(j);
+            }
+        }
+    }
+    return {x:x, y:y};
+}
+
+let graphData=[];
+
+function draw(){
+    graphData=[];
+    let f1=document.getElementById("func1").value;
+    let f2=document.getElementById("func2").value;
+    let d1=generateData(f1.split('=')[1]);
+    let d2=generateData(f2.split('=')[1]);
+    graphData.push({x:d1.x, y:d1.y, mode:'lines', name:'Function 1'});
+    graphData.push({x:d2.x, y:d2.y, mode:'lines', name:'Function 2'});
+
+    let imp1=document.getElementById("imp1").value;
+    let imp2=document.getElementById("imp2").value;
+    let id1=generateImplicit(imp1);
+    let id2=generateImplicit(imp2);
+    graphData.push({x:id1.x, y:id1.y, mode:'markers', name:'Implicit 1', marker:{size:3,color:'orange'}});
+    graphData.push({x:id2.x, y:id2.y, mode:'markers', name:'Implicit 2', marker:{size:3,color:'purple'}});
+
+    Plotly.newPlot('graph',graphData,{xaxis:{title:"x"},yaxis:{title:"y"}});
+    document.getElementById("result").innerHTML="";
+}
+
+function tangent(){
+    let expr=document.getElementById("func1").value.split('=')[1];
+    let x0=parseFloat(document.getElementById("point").value);
+    let slope=math.derivative(expr,'x').evaluate({x:x0});
+    let y0=math.evaluate(expr,{x:x0});
+    let xVals=[], yVals=[];
+    for(let i=-10;i<=10;i+=0.05){xVals.push(i); yVals.push(slope*(i-x0)+y0);}
+    let tangentLine={x:xVals,y:yVals,mode:'lines',name:'Tangent',line:{dash:'dash',color:'green'}};
+    Plotly.addTraces('graph',tangentLine);
+    document.getElementById("result").innerHTML="Tangent slope at x="+x0+" : "+slope.toFixed(3);
+}
+
+function normal(){
+    let expr=document.getElementById("func1").value.split('=')[1];
+    let x0=parseFloat(document.getElementById("point").value);
+    let slope=math.derivative(expr,'x').evaluate({x:x0});
+    let mn=-1/slope;
+    let y0=math.evaluate(expr,{x:x0});
+    let xVals=[], yVals=[];
+    for(let i=-10;i<=10;i+=0.05){xVals.push(i); yVals.push(mn*(i-x0)+y0);}
+    let normalLine={x:xVals,y:yVals,mode:'lines',name:'Normal',line:{dash:'dot',color:'red'}};
+    Plotly.addTraces('graph',normalLine);
+}
+
+function integral(){
+    let expr=document.getElementById("func1").value.split('=')[1];
+    let xVals=[], yVals=[];
+    for(let i=-10;i<=10;i+=0.05){xVals.push(i); yVals.push(math.evaluate(expr,{x:i}));}
+    let integralArea={x:xVals,y:yVals,mode:'lines',fill:'tozeroy',name:'Integral Area',line:{color:'rgba(200,0,0,0.3)'}};
+    Plotly.addTraces('graph',integralArea);
+    document.getElementById("result").innerHTML="Integral area shaded under the curve";
+}
+
+function clearGraph(){Plotly.purge('graph'); graphData=[]; document.getElementById("result").innerHTML="";}
+        </script>
+    </div>
+</div>

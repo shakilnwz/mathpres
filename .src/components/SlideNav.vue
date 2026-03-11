@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { HugeiconsIcon } from '@hugeicons/vue';
+import { AArrowDownIcon, AArrowUpIcon } from '@hugeicons/core-free-icons';
 
 interface Chapter {
     id: string
@@ -106,7 +108,7 @@ function goHome() {
                     :disabled="fontSize <= 50"
                     :class="{ 'opacity-50 cursor-not-allowed': fontSize <= 50 }"
                 >
-                    A-
+                    <HugeiconsIcon :icon="AArrowDownIcon" />
                 </button>
                 <span class="text-xs text-gray-600 min-w-8 text-center">{{ fontSize }}%</span>
                 <button
@@ -115,7 +117,7 @@ function goHome() {
                     :disabled="fontSize >= 200"
                     :class="{ 'opacity-50 cursor-not-allowed': fontSize >= 200 }"
                 >
-                    A+
+                    <HugeiconsIcon :icon="AArrowUpIcon" />
                 </button>
             </div>
 
