@@ -1,0 +1,1 @@
+import{t as e}from"./chunk-DtRyYLXJ.js";var t=e({default:()=>a,description:()=>r,slides:()=>i,title:()=>n}),n=`Introduction to Calculus`,r=`Basic concepts of limits and derivatives`,i=[`slide-1.vue`,`slide-2.html`,`slide-3.html`,`slide-4.md`],a={title:n,description:r,slides:i};export{t};
