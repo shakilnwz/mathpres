@@ -84,7 +84,7 @@ function goHome() {
 </script>
 
 <template>
-    <div class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50">
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
         <nav 
             :class="[
                 'bg-white/20 backdrop-blur-xl border border-white/30 shadow-2xl',
@@ -93,14 +93,6 @@ function goHome() {
             ]"
             @mouseleave="activeChapter = null"
         >
-            <button
-                @click="goHome"
-                class="px-3 py-1.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-white/40 transition-colors"
-                :class="{ 'bg-white/50': route.name === 'home' }"
-            >
-                Home
-            </button>
-
             <div class="flex items-center gap-1 ml-2 pl-2 border-l border-white/30">
                 <button
                     @click="zoomOut"
@@ -120,6 +112,15 @@ function goHome() {
                     <HugeiconsIcon :icon="AArrowUpIcon" />
                 </button>
             </div>
+            <button
+                @click="goHome"
+                class="px-3 py-1.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-white/40 transition-colors"
+                :class="{ 'bg-white/50': route.name === 'home' }"
+            >
+                Home
+            </button>
+
+
 
             <div 
                 v-for="chapter in chapters" 
