@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import MarkdownIt from 'markdown-it'
+import { generatedSlides } from '../slidesGenerated'
+
+interface Slide {
+  type: 'vue' | 'md' | 'html'
+  content?: string
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -43,24 +48,25 @@ async function loadSlide() {
       return
     }
     
-    const ext = slideFile.split('.').pop()?.toLowerCase()
+    const key = `${chapterId.value}/${slideFile}`
+    const slide = (generatedSlides as Record<string, Slide>)[key]
     
-    if (ext === 'vue') {
-      const module = await import(/* @vite-ignore */ `../../chapters/${chapterId.value}/${slideFile}`)
+    if (slide?.type === 'vue') {
+      const modules = import.meta.glob('../../chapters/**/*.vue')
+      const module = await modules[`../../chapters/${key}`]!() as { default: any }
       slideContent.value = module.default
       htmlContent.value = ''
       markdownContent.value = ''
-    } else if (ext === 'md') {
-      const md = new MarkdownIt()
-      const content = await import(/* @vite-ignore */ `../../chapters/${chapterId.value}/${slideFile}?raw`)
-      markdownContent.value = md.render(content.default || content)
+    } else if (slide?.type === 'md') {
+      markdownContent.value = slide.content || ''
       htmlContent.value = ''
       slideContent.value = null
-    } else if (ext === 'html') {
-      const content = await import(/* @vite-ignore */ `../../chapters/${chapterId.value}/${slideFile}?raw`)
-      htmlContent.value = content.default || content
+    } else if (slide?.type === 'html') {
+      htmlContent.value = slide.content || ''
       slideContent.value = null
       markdownContent.value = ''
+    } else {
+      error.value = 'Slide not found'
     }
   } catch (e) {
     error.value = 'Failed to load slide'

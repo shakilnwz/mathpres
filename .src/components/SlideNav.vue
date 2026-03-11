@@ -65,6 +65,13 @@ function zoomOut() {
     }
 }
 
+function formatSlideName(filename: string): string {
+    const name = filename.replace(/\.[^/.]+$/, '')
+    return name
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase())
+}
+
 function goToSlide(chapterId: string, slideIndex: number) {
     router.push(`/chapter/${chapterId}/${slideIndex + 1}`)
 }
@@ -148,7 +155,7 @@ function goHome() {
                                 class="px-3 py-1.5 text-sm text-left rounded-lg text-gray-700 hover:bg-white/50 transition-colors"
                                 :class="{ 'bg-blue-500/20 text-blue-700': currentChapterId === chapter.id && currentSlideIndex === index }"
                             >
-                                {{ index + 1 }}. {{ slide }}
+                                {{ index + 1 }}. {{ formatSlideName(slide) }}
                             </button>
                         </div>
                     </div>
