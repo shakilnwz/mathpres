@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 interface Chapter {
@@ -13,6 +13,7 @@ const route = useRoute()
 
 const chapters = ref<Chapter[]>([])
 const activeChapter = ref<string | null>(null)
+const fontSize = ref(100)
 
 const isSlidePage = computed(() => route.name === 'slide')
 const currentChapterId = computed(() => route.params.chapterId as string)
@@ -22,7 +23,13 @@ const currentSlideIndex = computed(() => {
 })
 
 onMounted(async () => {
-    const modules = import.meta.glob('/src/chapters/*/meta.json', { eager: true })
+    const savedSize = localStorage.getItem('mathpres-font-size')
+    if (savedSize) {
+        fontSize.value = parseInt(savedSize)
+    }
+    applyFontSize()
+
+    const modules = import.meta.glob('/chapters/*/meta.json', { eager: true })
 
     for (const path in modules) {
         const match = path.match(/\/chapters\/([^/]+)\/meta\.json/)
@@ -36,6 +43,27 @@ onMounted(async () => {
         }
     }
 })
+
+watch(fontSize, () => {
+    localStorage.setItem('mathpres-font-size', fontSize.value.toString())
+    applyFontSize()
+})
+
+function applyFontSize() {
+    document.documentElement.style.setProperty('--slide-font-size', `${fontSize.value}%`)
+}
+
+function zoomIn() {
+    if (fontSize.value < 200) {
+        fontSize.value += 10
+    }
+}
+
+function zoomOut() {
+    if (fontSize.value > 50) {
+        fontSize.value -= 10
+    }
+}
 
 function goToSlide(chapterId: string, slideIndex: number) {
     router.push(`/chapter/${chapterId}/${slideIndex + 1}`)
@@ -63,6 +91,26 @@ function goHome() {
             >
                 Home
             </button>
+
+            <div class="flex items-center gap-1 ml-2 pl-2 border-l border-white/30">
+                <button
+                    @click="zoomOut"
+                    class="px-2 py-1 rounded-lg text-sm text-gray-700 hover:bg-white/40 transition-colors"
+                    :disabled="fontSize <= 50"
+                    :class="{ 'opacity-50 cursor-not-allowed': fontSize <= 50 }"
+                >
+                    A-
+                </button>
+                <span class="text-xs text-gray-600 min-w-8 text-center">{{ fontSize }}%</span>
+                <button
+                    @click="zoomIn"
+                    class="px-2 py-1 rounded-lg text-sm text-gray-700 hover:bg-white/40 transition-colors"
+                    :disabled="fontSize >= 200"
+                    :class="{ 'opacity-50 cursor-not-allowed': fontSize >= 200 }"
+                >
+                    A+
+                </button>
+            </div>
 
             <div 
                 v-for="chapter in chapters" 

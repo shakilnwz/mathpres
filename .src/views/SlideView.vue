@@ -26,7 +26,7 @@ async function loadSlide() {
   error.value = ''
   
   try {
-    const meta = await import(`../chapters/${chapterId.value}/meta.json`)
+    const meta = await import(`../../chapters/${chapterId.value}/meta.json`)
     chapterMeta.value = meta.default || meta
     
     const slides = chapterMeta.value?.slides
@@ -46,18 +46,18 @@ async function loadSlide() {
     const ext = slideFile.split('.').pop()?.toLowerCase()
     
     if (ext === 'vue') {
-      const module = await import(`../chapters/${chapterId.value}/${slideFile}`)
+      const module = await import(`../../chapters/${chapterId.value}/${slideFile}`)
       slideContent.value = module.default
       htmlContent.value = ''
       markdownContent.value = ''
     } else if (ext === 'md') {
       const md = new MarkdownIt()
-      const content = await import(`../chapters/${chapterId.value}/${slideFile}?raw`)
+      const content = await import(`../../chapters/${chapterId.value}/${slideFile}?raw`)
       markdownContent.value = md.render(content.default || content)
       htmlContent.value = ''
       slideContent.value = null
     } else if (ext === 'html') {
-      const content = await import(`../chapters/${chapterId.value}/${slideFile}?raw`)
+      const content = await import(`../../chapters/${chapterId.value}/${slideFile}?raw`)
       htmlContent.value = content.default || content
       slideContent.value = null
       markdownContent.value = ''

@@ -16,7 +16,7 @@ const chapterId = computed(() => route.params.chapterId as string)
 
 onMounted(async () => {
   try {
-    const meta = await import(`../chapters/${chapterId.value}/meta.json`)
+    const meta = await import(`../../chapters/${chapterId.value}/meta.json`)
     chapter.value = meta.default || meta
   } catch (e) {
     console.error('Chapter not found:', e)

@@ -6,6 +6,10 @@
   --font-display: "Inter", system-ui, sans-serif;
 }
 
+:root {
+  --slide-font-size: 100%;
+}
+
 html, body, #app {
   width: 100%;
   height: 100%;
@@ -14,4 +18,5 @@ html, body, #app {
 
 .slide {
   @apply w-screen h-screen fixed inset-0 overflow-hidden pb-20;
+  font-size: var(--slide-font-size);
 }

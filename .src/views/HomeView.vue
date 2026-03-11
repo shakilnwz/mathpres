@@ -13,7 +13,7 @@ const router = useRouter()
 const chapters = ref<Chapter[]>([])
 
 onMounted(async () => {
-  const modules = import.meta.glob('/src/chapters/*/meta.json', { eager: true })
+  const modules = import.meta.glob('/chapters/*/meta.json', { eager: true })
   
   for (const path in modules) {
     const match = path.match(/\/chapters\/([^/]+)\/meta\.json/)
@@ -41,7 +41,7 @@ function openChapter(chapterId: string) {
       <p class="text-xl text-gray-600 mb-8">Interactive presentations for learning mathematics</p>
       
       <div v-if="chapters.length === 0" class="text-gray-500">
-        No chapters found. Create chapters in src/chapters/
+        No chapters found. Create chapters in ./chapters/
       </div>
       
       <div v-else class="grid gap-4 w-full max-w-2xl mt-8">
